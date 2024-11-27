@@ -1,0 +1,39 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch Winkey",
+      "type": "cppvsdbg", // Use 'cppdbg' for non-Windows systems
+      "request": "launch",
+      "program": "${workspaceFolder}/winkey.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "console": "integratedTerminal",
+      "symbolSearchPath": "${workspaceFolder}",
+      "logging": {
+        "engineLogging": true,
+        "trace": true
+      },
+      "preLaunchTask": "Build Winkey"
+    },
+    {
+      "name": "Launch Tinkey",
+      "type": "cppvsdbg", // Use 'cppdbg' for non-Windows systems
+      "request": "launch",
+      "program": "${workspaceFolder}/tinkey.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "console": "integratedTerminal",
+      "symbolSearchPath": "${workspaceFolder}",
+      "logging": {
+        "engineLogging": true,
+        "trace": true
+      },
+      "preLaunchTask": "Build Tinkey"
+    }
+  ]
+}
