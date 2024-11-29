@@ -3,6 +3,7 @@
 srcs_dir=srcs
 objs_dir=objs
 keylogger=winkey.exe
+hookdll=Hook.dll
 
 cflags=$(cflags) -D_UNICODE -DUNICODE
 
@@ -15,7 +16,10 @@ fclean: clean
 	@if exist $(keylogger) del $(keylogger)
 
 $(keylogger): $(objs_dir)\Winkey.obj
-	$(link) $(ldebug) $(lflags) $(guiflags) $** -out:$@ kernel32.lib user32.lib
+	$(link) $(ldebug) $(lflags) $(guiflags) $** -out:$@ $(guilibs)
+
+$(hookdll): $(objs_dir)\Hook.obj
+	$(link) $(ldebug) $(lflags) $(dlllflags) $** -out:$@ kernel32.lib user32.lib
 
 {$(srcs_dir)\}.c{$(objs_dir)\}.obj:
 	@if not exist $(objs_dir) mkdir $(objs_dir)
