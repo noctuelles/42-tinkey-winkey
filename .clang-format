@@ -1,0 +1,55 @@
+---
+# .clang-format configuration for Win32 programming style
+BasedOnStyle: LLVM  # Base style for consistency
+IndentWidth: 4      # Use 4 spaces for indentation (Win32 preference)
+TabWidth: 4         # Tab stops at 4 spaces
+UseTab: Never       # Avoid tabs, use spaces for alignment
+ColumnLimit: 80     # Stick to 80 characters per line
+
+# Align function definitions and calls
+AlignConsecutiveAssignments: true
+AlignConsecutiveDeclarations: true
+AlignOperands: true
+AlignTrailingComments: true
+
+# Brace placement to match Win32 style
+BraceWrapping:
+  AfterClass: false
+  AfterControlStatement: false
+  AfterEnum: false
+  AfterFunction: false
+  AfterNamespace: false
+  AfterStruct: false
+  BeforeElse: true
+  BeforeCatch: true
+  IndentBraces: false
+
+# Indentation for conditional and control structures
+IndentCaseLabels: false
+BreakBeforeBraces: Allman
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+
+# Pointer and reference alignment
+PointerAlignment: Left  # Align pointers to the variable name
+SpaceBeforeParens: ControlStatements
+
+# Spaces and formatting preferences
+SpaceBeforeRangeBasedForLoopColon: true
+SpaceInEmptyParentheses: false
+SpacesBeforeTrailingComments: 2
+SpacesInAngles: false
+SpacesInCStyleCastParentheses: false
+
+# Formatting for include statements
+SortIncludes: false  # Do not sort includes (Win32 code may rely on specific include order)
+IncludeBlocks: Regroup
+
+# Comment style
+CommentPragmas: '^W.*'  # Preserve Win32-specific comments starting with 'W'
+
+# Customize macros and preprocessor directives
+IndentPPDirectives: None
+KeepEmptyLinesAtTheStartOfBlocks: true
+MaxEmptyLinesToKeep: 1
+...

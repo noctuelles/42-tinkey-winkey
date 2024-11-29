@@ -5,4 +5,5 @@ tinkey.exe
 *.dll
 *.exp
 *.lib
+*.log
 .vscode/settings.json

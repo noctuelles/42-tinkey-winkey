@@ -10,13 +10,14 @@ HWND installingHwnd = NULL;
 
 UINT UWM_WINKEY = 0;
 
-__declspec(dllexport) LRESULT CALLBACK GetMessageProc(int nCode, WPARAM wParam, LPARAM lParam)
+__declspec(dllexport) LRESULT CALLBACK GetMessageProc(int nCode, WPARAM wParam,
+                                                      LPARAM lParam)
 {
-    MSG *msg;
+    MSG* msg;
 
     if (nCode >= HC_ACTION)
     {
-        msg = (MSG *)lParam;
+        msg = (MSG*)lParam;
 
         if (LOWORD(msg->message) == WM_CHAR)
         {
@@ -35,8 +36,7 @@ __declspec(dllexport) int __cdecl setInstallingHwnd(HWND hwnd)
     return 0;
 }
 
-BOOL WINAPI
-DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
+BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
     switch (fdwReason)
     {
