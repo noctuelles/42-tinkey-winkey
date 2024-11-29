@@ -20,7 +20,7 @@ fclean: clean
 	@del *.exp
 
 $(keylogger): $(objs_dir)\Winkey.obj
-	$(link) $(ldebug) $(lflags) $(guiflags) $** -out:$@ $(guilibs)
+	$(link) $(ldebug) $(lflags) $(guiflags) $** -out:$@ $(guilibs) psapi.lib
 
 $(hookdll): $(objs_dir)\Hook.obj
 	$(link) $(ldebug) $(lflags) $(dlllflags) $** -out:$@ kernel32.lib user32.lib

